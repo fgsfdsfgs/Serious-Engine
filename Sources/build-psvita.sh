@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASEDIR=$(dirname "$0")
-let NCPU=8
+let NCPU=4
 echo "Will build with 'make -j$NCPU' ... please edit this script if incorrect."
 
 rm -rf psvita-build
@@ -15,7 +15,7 @@ cmake -G"Unix Makefiles" \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DPKG_CONFIG_EXECUTABLE="$VITASDK/bin/arm-vita-eabi-pkg-config" \
   -DECC="$BASEDIR/cmake-build/Ecc/ecc" \
-  -DTFE=OFF \
+  -DTFE="${TFE:-OFF}" \
   $1 \
   ..
 
