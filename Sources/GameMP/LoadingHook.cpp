@@ -17,6 +17,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdAfx.h"
 #include "LCDDrawing.h"
 #include <locale.h>
+#ifdef PLATFORM_PSVITA
+#include <vitasdk.h>
+#endif
 
 #define USECUSTOMTEXT 0
 
@@ -60,7 +63,15 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   if (pphi->phi_fCompleted>0) {
     ulCheckFlags |= 0x0001;
   }
-  if (_bUserBreakEnabled && (GetAsyncKeyState(VK_ESCAPE)&ulCheckFlags)) {
+  BOOL bBreakHit = (GetAsyncKeyState(VK_ESCAPE)&ulCheckFlags) != 0;
+#ifdef PLATFORM_PSVITA
+  // check pad directly to avoid the entire event loop thing, since it doesn't update during loading
+  // break loading if start/select/triangle are pressed
+  SceCtrlData pad = { 0 };
+  sceCtrlPeekBufferPositive(0, &pad, 1);
+  bBreakHit = bBreakHit || (pad.buttons & (SCE_CTRL_SELECT | SCE_CTRL_TRIANGLE | SCE_CTRL_START));
+#endif
+  if (_bUserBreakEnabled && bBreakHit) {
     // break loading
     throw TRANS("User break!");
   }
