@@ -1015,7 +1015,11 @@ void QuitScreenLoop(void)
       // if it is not a keyboard or mouse message
       if(msg.message==WM_LBUTTONDOWN||
          msg.message==WM_RBUTTONDOWN||
-         msg.message==WM_KEYDOWN) {
+         msg.message==WM_KEYDOWN
+#ifdef PLATFORM_PSVITA
+         ||msg.message==WM_JOYBUTTONDOWN
+#endif
+        ) {
         return;
       }
     }
