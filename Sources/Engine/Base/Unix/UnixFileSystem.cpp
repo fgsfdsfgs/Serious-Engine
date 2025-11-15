@@ -80,10 +80,10 @@ CUnixFileSystem::CUnixFileSystem(const char *argv0, const char *gamename)
 #if PLATFORM_PSVITA
     // the root path is obtained from the exePath, so we'll feed it a fake one
     #if FIRST_ENCOUNTER
-    userDir = SDL_strdup("ux0:/data/ssam_tfe");
+    userDir = SDL_strdup("ux0:/data/ssam_tfe/");
     exePath = SDL_strdup("ux0:/data/ssam_tfe/Bin/ssam");
     #else
-    userDir = SDL_strdup("ux0:/data/ssam_tse");
+    userDir = SDL_strdup("ux0:/data/ssam_tse/");
     exePath = SDL_strdup("ux0:/data/ssam_tse/Bin/ssam");
     #endif
 #else
