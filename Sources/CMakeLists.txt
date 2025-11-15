@@ -1170,7 +1170,7 @@ if(VITA)
     vita_create_vpk(${VITA_DST}.vpk ${VITA_TITLEID} eboot.bin
         VERSION ${VITA_VERSION}
         NAME ${VITA_APP_NAME}
-        FILE ${CMAKE_SOURCE_DIR}/../PSVita/sce_sys sce_sys
+        FILE ${CMAKE_SOURCE_DIR}/../PSVita/${VITA_DST}/sce_sys sce_sys
     )
 endif()
 
