@@ -131,7 +131,7 @@ void InfoMessage(const char *strFormat, ...)
   // create message box
   #ifdef PLATFORM_WIN32
   MessageBoxA(NULL, (const char *) strBuffer, TRANS("Information"), MB_OK|MB_ICONINFORMATION|MB_SETFOREGROUND|MB_TASKMODAL);
-  #else
+  #elif !defined(PLATFORM_PSVITA)
   SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANSV("Information"), strBuffer, (SDL_Window *) _hwndMain);
   #endif
 }

@@ -54,6 +54,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     #endif
   #endif
 
+#elif (defined __vita__)
+  #ifndef PLATFORM_PSVITA
+    #define PLATFORM_PSVITA 1
+  #endif
 #elif (defined __linux__) 
   #if (defined __ANDROID__) || (defined __android__) 
     #error "Android current isn't supported"
@@ -67,7 +71,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define PLATFORM_UNKNOWN 1
 #endif
 
-#if PLATFORM_LINUX || PLATFORM_MACOSX
+#if PLATFORM_LINUX || PLATFORM_MACOSX || PLATFORM_PSVITA
   #ifndef PLATFORM_UNIX
     #define PLATFORM_UNIX 1
   #endif
@@ -77,7 +81,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define ENGINE_API
 #endif
 
-#ifdef PLATFORM_PANDORA
+#if defined(PLATFORM_PANDORA) || defined(PLATFORM_PSVITA)
 # define INDEX_T unsigned short
 # define INDEX_GL GL_UNSIGNED_SHORT
 # define FASTMATH __attribute__((pcs("aapcs-vfp")))

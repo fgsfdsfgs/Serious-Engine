@@ -116,27 +116,36 @@ public:
 };
 
 // define vorbis function pointers
+// define vorbis function pointers
+#ifdef STATIC_LIBVORBIS
+#define DLLFUNCTION(dll, output, name, inputs, params, required) \
+  auto p##name = &name;
+#else
 #define DLLFUNCTION(dll, output, name, inputs, params, required) \
   output (__cdecl *p##name) inputs = NULL;
+#endif
 #include "ov_functions.h"
 #undef DLLFUNCTION
 
 static void OV_SetFunctionPointers_t(void) {
+#ifndef STATIC_LIBVORBIS
   const char *strName;
   // get vo function pointers
-
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name ;  \
-    p##name = (output (__cdecl *) inputs) _hOV->FindSymbol(strName); \
+    p##name = (output (__cdecl *) inputs) dlsym( _hOV, strName); \
     if(p##name == NULL) FailFunction_t(strName);
   #include "ov_functions.h"
   #undef DLLFUNCTION
+#endif
 }
 static void OV_ClearFunctionPointers(void) {
+#ifndef STATIC_LIBVORBIS
   // clear vo function pointers
   #define DLLFUNCTION(dll, output, name, inputs, params, required) p##name = NULL;
   #include "ov_functions.h"
   #undef DLLFUNCTION
+#endif
 }
 
 // ogg file reading callbacks
@@ -207,25 +216,27 @@ static ov_callbacks ovcCallbacks = {
 void CSoundDecoder::InitPlugins(void)
 {
   try {
+    #if ((defined PLATFORM_WIN32) && (defined NDEBUG))
+      #define VORBISLIB "vorbisfile_d"
+    #else
+      #ifdef USE_TREMOR
+        #define VORBISLIB "vorbisidec"
+      #else
+        #define VORBISLIB "vorbisfile"
+      #endif
+    #endif
+
     // load vorbis
+    #ifndef STATIC_LIBVORBIS
     if (_hOV==NULL) {
-       #if ((defined PLATFORM_WIN32) && (defined NDEBUG))
-         #define VORBISLIB "vorbisfile_d"
-       #else
-         #ifdef USE_TREMOR
-          #define VORBISLIB "vorbisidec"
-         #else
-          #define VORBISLIB "vorbisfile"
-         #endif
-       #endif
        _hOV = CDynamicLoader::GetInstance(VORBISLIB);
        if( _hOV->GetError() != NULL) {
          ThrowF_t(TRANS("Cannot load " VORBISLIB " shared library: %s."), _hOV->GetError());
        }
     }
-
     // prepare function pointers
     OV_SetFunctionPointers_t();
+    #endif
 
     // if all successful, enable mpx playing
     _bOVEnabled = TRUE;

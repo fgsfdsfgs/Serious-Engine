@@ -233,9 +233,10 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   const char *dllName = NULL;
 
     // load the DLL
-  #ifdef STATICALLY_LINKED
-    ec_hiClassDLL = CDynamicLoader::GetInstance(NULL);
-    dllName = "(statically linked)";
+  #ifdef STATIC_GAMELIBS
+    CTString fnmExpanded = fnmDLL.FileName()+_strModExt;
+    dllName = fnmExpanded;
+    ec_hiClassDLL = CDynamicLoader::GetInstance(dllName);
   #else
     // create name of dll
     #ifndef NDEBUG

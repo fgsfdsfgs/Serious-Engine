@@ -570,7 +570,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
     const FLOAT fI0 = pixI0+0.5f;  const FLOAT fJ0 = pixJ0+0.5f;
     const FLOAT fI1 = pixI1+0.5f;  const FLOAT fJ1 = pixJ1+0.5f;
     glCOLOR(col);
-    pglBegin( GL_LINES);
+    pglBegin(GL_LINES);
       pglTexCoord2f( 0,0); pglVertex2f(fI0,fJ0);
       pglTexCoord2f(fD,0); pglVertex2f(fI1,fJ1);
     pglEnd();

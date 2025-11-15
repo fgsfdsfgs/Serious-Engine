@@ -215,6 +215,8 @@ static void DetectCPU(void)
   sys_iCPUMHz = 400;    // conservative, ARM -> x86 cpu translation is not 1 to 1.
 #elif defined(PLATFORM_PYRA)
   sys_iCPUMHz = 1000;
+#elif defined(PLATFORM_PSVITA)
+  sys_iCPUMHz = 444;    // TODO: maybe take actual speed into account
 #else
   sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ/1E6);
 #endif
@@ -398,6 +400,10 @@ static void SetupMemoryManager(void)
   #define MB (1024*1024)
   sys_iRAMPhys = ms.dwTotalPhys    /MB;
   sys_iRAMSwap = ms.dwTotalPageFile/MB;
+
+#elif (defined PLATFORM_PSVITA)
+  sys_iRAMPhys = 256; // should probably use newlib heap size for this or something
+  sys_iRAMSwap = 1;
 
 #elif (defined PLATFORM_UNIX)
   #ifdef PLATFORM_PANDORA

@@ -214,6 +214,10 @@ void CConsole::PutString(const char *strString)
     printf("%s", strString);
   }
 
+#if PLATFORM_PSVITA
+  fprintf(stderr, "%s", strString);
+#endif
+
   // start at the beginning of the string
   const char *pch=strString;
   // while not end of string

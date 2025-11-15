@@ -223,13 +223,14 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
 
     // !!! FIXME : Should inline functions go somewhere else?
 
-    inline void _strupr(char *str)
+    inline char *_strupr(char *str)
     {
         if (str != NULL)
         {
             for (char *ptr = str; *ptr; ptr++)
                *ptr = toupper(*ptr);
         }
+        return str;
     }
 
     inline ULONG rotl(ULONG ul, int bits)
@@ -702,8 +703,8 @@ inline __uint64 BYTESWAP64_unsigned(__uint64 x)
 #ifdef __GNUC__ // GCC and clang have a builtin that hopefully does the most efficient thing
   return __builtin_bswap64(x);
 #else
-  ULONG l = BYTESWAP32_unsigned((ULONG)(val & 0xFFFFFFFF));
-  ULONG h = BYTESWAP32_unsigned((ULONG)((val >> 32) & 0xFFFFFFFF));
+  ULONG l = BYTESWAP32_unsigned((ULONG)(x & 0xFFFFFFFF));
+  ULONG h = BYTESWAP32_unsigned((ULONG)((x >> 32) & 0xFFFFFFFF));
   return (((__uint64)l) << 32) | ((__uint64)h);
 #endif
 }

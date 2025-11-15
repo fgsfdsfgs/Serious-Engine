@@ -9,6 +9,8 @@ option(USE_SYSTEM_SDL2 "Use systems sdl2 development files" On)
 option(USE_SYSTEM_ZLIB "Use systems zlib development files" On)
 option(USE_CCACHE "Set to ON to use ccache if present in the system" ${USE_CCACHE})
 
+option(STATIC_GAMELIBS "Link Game/Entities/Shaders libs into the main ELF" Off)
+option(STATIC_LIBVORBIS "Link libvorbis/libogg into the main ELF" On)
 
 # fallback for cmake versions without add_compile_options # RAKE! Borrowed from dhewm3 project
 if(NOT COMMAND add_compile_options)
@@ -35,6 +37,19 @@ if(USE_CCACHE)
     endif()
 endif()
 
+if(VITA)
+    set(STATIC_GAMELIBS TRUE)
+    set(STATIC_LIBVORBIS TRUE)
+    set(USE_ASM FALSE)
+endif()
+
+if(STATIC_GAMELIBS)
+    add_definitions(-DSTATIC_GAMELIBS=1)
+endif()
+
+if(STATIC_LIBVORBIS)
+    add_definitions(-DSTATIC_LIBVORBIS=1)
+endif()
 
 # Use systemwide SDL2 or custom build
 # RAKE!: Find a way to use their custom built library if
@@ -101,8 +116,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_CO
 	# c and c++ compile options
 	add_compile_options(-Wall)
 	add_compile_options(-pipe)
-	add_compile_options(-fPIC)
-	if(NOT PANDORA AND NOT PYRA AND NOT (MACOSX AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64"))
+	if(NOT VITA)
+		# on the vita we only want fPIC on shared libraries
+		add_compile_options(-fPIC)
+	endif()
+	if(NOT PANDORA AND NOT PYRA AND NOT VITA AND NOT (MACOSX AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64"))
 		add_compile_options(-march=native)
 	endif()
 	if(CMAKE_SYSTEM_PROCESSOR MATCHES "^arm.*")
@@ -203,6 +221,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_CO
     		add_definitions(-D_LARGEFILE_SOURCE=1)
     		add_definitions(-DPRAGMA_ONCE=1)
     		include_directories("/usr/local/include")
+    elseif(VITA)
+    		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-DPLATFORM_PSVITA=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+    		add_compile_options(-fno-short-enums -fno-optimize-sibling-calls)
 	endif()
 	
         if(MACOSX OR LINUX OR FREEBSD)
@@ -292,8 +315,7 @@ else()
 endif()
 
 
-# !!! FIXME: I currently force this, but you shouldn't _have_ to.
-option(USE_SINGLE_THREAD "Use Single Threaded version" TRUE)
+option(USE_SINGLE_THREAD "Use Single Threaded version" FALSE)
 if(USE_SINGLE_THREAD)
  add_definitions(-DSINGLE_THREADED=1)
 endif()
@@ -346,6 +368,9 @@ entity(Engine/Classes/MovableBrushEntity)
 entity(Engine/Classes/MovableEntity)
 entity(Engine/Classes/MovableModelEntity)
 entity(Engine/Classes/PlayerEntity)
+if(STATIC_GAMELIBS)
+    list(APPEND ENTITIES_CPP "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Entities/FakeExports.cpp")
+endif()
 set(ENGINE_ENTITIES_CPP ${ENTITIES_CPP})
 
 set(ENTITIES_CPP "")
@@ -618,6 +643,15 @@ endif()
 add_custom_target(ParseEntities DEPENDS ${ENTITIES_H})
 
 set(ENTITIESMPLIB "Entities${MP}${DEBUGSUFFIX}")
+if(STATIC_GAMELIBS)
+    if(TFE)
+        set(ENTITIESMPLIB_FAKE_EXPORTS Entities/Common/FakeExports.cpp)
+    else()
+        set(ENTITIESMPLIB_FAKE_EXPORTS EntitiesMP/Common/FakeExports.cpp)
+    endif()
+else()
+    set(ENTITIESMPLIB_FAKE_EXPORTS )
+endif()
 if(TFE)
  add_library(${ENTITIESMPLIB} SHARED
      ${ENTITIES_CPP}
@@ -627,15 +661,19 @@ if(TFE)
      Entities/Common/Stats.cpp
      Entities/Common/PathFinding.cpp
      Entities/Common/HUD.cpp
+     Entities/Common/FakeExports.cpp
+     ${ENTITIESMPLIB_FAKE_EXPORTS}
  )
 else()
  add_library(${ENTITIESMPLIB} SHARED
      ${ENTITIES_CPP}
      EntitiesMP/Common/Common.cpp
- 	 EntitiesMP/Common/Particles.cpp
- 	 EntitiesMP/Common/EmanatingParticles.cpp
- 	 EntitiesMP/Common/PathFinding.cpp
- 	 EntitiesMP/Common/HUD.cpp
+     EntitiesMP/Common/Particles.cpp
+     EntitiesMP/Common/EmanatingParticles.cpp
+     EntitiesMP/Common/PathFinding.cpp
+     EntitiesMP/Common/HUD.cpp
+     EntitiesMP/Common/FakeExports.cpp
+     ${ENTITIESMPLIB_FAKE_EXPORTS}
  )
 endif()
 
@@ -645,6 +683,11 @@ endif()
 add_dependencies(${ENTITIESMPLIB} ParseEntities)
 
 set(GAMEMPLIB "Game${MP}${DEBUGSUFFIX}")
+if(STATIC_GAMELIBS)
+    set(GAMEMPLIB_FAKE_EXPORTS GameMP/FakeExports.cpp)
+else()
+    set(GAMEMPLIB_FAKE_EXPORTS )
+endif()
 add_library(${GAMEMPLIB} SHARED
     GameMP/Camera.cpp
     GameMP/CompMessage.cpp
@@ -658,6 +701,8 @@ add_library(${GAMEMPLIB} SHARED
     GameMP/Map.cpp
     GameMP/SessionProperties.cpp
     GameMP/WEDInterface.cpp
+    GameMP/FakeExports.cpp
+    ${GAMEMPLIB_FAKE_EXPORTS}
 )
 if(MACOSX)
     target_link_libraries(${GAMEMPLIB} "-undefined dynamic_lookup")
@@ -665,6 +710,11 @@ endif()
 add_dependencies(${GAMEMPLIB} ParseEntities)
 
 set(SHADERSLIB "Shaders${DEBUGSUFFIX}")
+if(STATIC_GAMELIBS)
+    set(SHADERS_FAKE_EXPORTS Shaders/FakeExports.cpp)
+else()
+    set(SHADERS_FAKE_EXPORTS )
+endif()
 add_library(${SHADERSLIB} SHARED
     Shaders/AddShader.cpp
     Shaders/AddShaderDS.cpp
@@ -686,6 +736,7 @@ add_library(${SHADERSLIB} SHARED
     Shaders/SpecularDS.cpp
     Shaders/StdH.cpp
     Shaders/Translucent.cpp
+    ${SHADERS_FAKE_EXPORTS}
 )
 if(MACOSX)
     target_link_libraries(${SHADERSLIB} "-undefined dynamic_lookup")
@@ -765,6 +816,12 @@ if(PANDORA)
 endif()
 add_dependencies(engine_safemath ParseEntities)
 
+if(STATIC_GAMELIBS)
+    set(ENGINE_DYNAMIC_LOADER Engine/Base/PSVita/FakeDynamicLoader.cpp)
+else()
+    set(ENGINE_DYNAMIC_LOADER Engine/Base/Unix/UnixDynamicLoader.cpp)
+endif()
+
 set(ENGINE_SRCS
     ${ENGINE_ENTITIES_CPP}
     Engine/Engine.cpp
@@ -799,7 +856,7 @@ set(ENGINE_SRCS
     Engine/Base/Parser.h
     Engine/Base/IFeel.cpp
     Engine/Base/Unix/UnixFileSystem.cpp
-    Engine/Base/Unix/UnixDynamicLoader.cpp
+    ${ENGINE_DYNAMIC_LOADER}
     Engine/Base/SDL/SDLTimer.cpp
     Engine/Base/SDL/SDLInput.cpp
     Engine/Base/SDL/SDLEvents.cpp
@@ -948,11 +1005,16 @@ add_executable(ssam
     SeriousSam/MenuGadgets.cpp
     SeriousSam/MenuPrinting.cpp
 )
+if(STATIC_GAMELIBS)
+    target_link_libraries(ssam -Wl,--whole-archive ${ENTITIESMPLIB} ${GAMEMPLIB} ${SHADERSLIB} -Wl,--no-whole-archive)
+endif()
+if(STATIC_LIBVORBIS)
+    target_link_libraries(ssam vorbisfile vorbis ogg)
+endif()
 target_link_libraries(ssam engine_safemath)
 add_dependencies(ssam ParseEntities)
 # Make symbols in the main executable available to dynamic objects
 set_target_properties(ssam PROPERTIES ENABLE_EXPORTS ON)
-
 
 # !!! FIXME: this is an option because you have to recompile the entire engine twice.
 # !!! FIXME:  If we can put the engine in a static library and not lose symbols,
@@ -1022,8 +1084,42 @@ if(FREEBSD)
     endif()
 endif()
 
+if(VITA)
+    target_link_libraries(ssam
+        -Wl,-no-enum-size-warning
+        -lSDL2
+        -lz
+        -lvitaGL
+        -lvitashark
+        -lSceShaccCgExt
+        -lmathneon
+        -lm
+        -Wl,--whole-archive -lpthread -Wl,--no-whole-archive
+        -ltaihen_stub
+        -lSceShaccCg_stub
+        -lSceIme_stub
+        -lSceGxm_stub
+        -lSceDisplay_stub
+        -lSceKernelDmacMgr_stub
+        -lSceCtrl_stub
+        -lSceAppMgr_stub
+        -lSceAppUtil_stub
+        -lSceAudio_stub
+        -lSceAudioIn_stub
+        -lSceSysmodule_stub
+        -lSceIofilemgr_stub
+        -lSceCommonDialog_stub
+        -lSceTouch_stub
+        -lSceHid_stub
+        -lSceMotion_stub
+        -lScePower_stub
+    )
+endif()
+
 if(TFE)
- set_target_properties(ssam PROPERTIES OUTPUT_NAME "ssam-tfe")
+    if(NOT VITA)
+        set_target_properties(ssam PROPERTIES OUTPUT_NAME "ssam-tfe")
+    endif()
 endif()
 
 # RAKE! Install Section.
@@ -1055,6 +1151,27 @@ if(NOT LOCAL_INSTALL)
     install(FILES ${CMAKE_SOURCE_DIR}/../SE1_10.gro
             DESTINATION ${CMAKE_INSTALL_PREFIX}
             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+endif()
+
+if(VITA)
+    include("${VITASDK}/share/vita.cmake" REQUIRED)
+    set(VITA_VERSION  "01.00")
+    set(VITA_MKSFOEX_FLAGS "-d ATTRIBUTE2=12")
+    if(TFE)
+        set(VITA_APP_NAME "Serious Sam: The First Encounter")
+        set(VITA_TITLEID  "SSAM10001")
+        set(VITA_DST "ssam-tfe")
+    else()
+        set(VITA_APP_NAME "Serious Sam: The Second Encounter")
+        set(VITA_TITLEID  "SSAM10002")
+        set(VITA_DST "ssam-tse")
+    endif()
+    vita_create_self(eboot.bin ssam)
+    vita_create_vpk(${VITA_DST}.vpk ${VITA_TITLEID} eboot.bin
+        VERSION ${VITA_VERSION}
+        NAME ${VITA_APP_NAME}
+        FILE ${CMAKE_SOURCE_DIR}/../PSVita/sce_sys sce_sys
+    )
 endif()
 
 # end of CMakeLists.txt ...

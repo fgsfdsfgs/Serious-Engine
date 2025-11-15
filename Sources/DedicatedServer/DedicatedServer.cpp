@@ -45,9 +45,9 @@ HWND _hwndMain = NULL;
 
 void InitializeGame(void)
 {
-  #ifdef STATICALLY_LINKED
-    #define fnmExpanded NULL
-    CPrintF(TRANSV("Loading game library '%s'...\n"), "(statically linked)");
+  #ifdef STATIC_GAMELIBS
+    CTFileName fnmExpanded = "Game"+_strModExt;
+    CPrintF(TRANSV("Loading game library '%s'...\n"), (const char *)fnmExpanded);
   #else
     CTFileName fnmDLL;
     #ifndef NDEBUG

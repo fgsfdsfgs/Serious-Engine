@@ -87,6 +87,18 @@ BOOL PeekMessage(MSG *msg, void *hwnd, UINT wMsgFilterMin,
                 }
                 break;
 
+#ifdef PLATFORM_PSVITA
+            // Allow joystick controls for menus.
+            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP:
+                msg->wParam = sdlevent.jbutton.button;
+                return TRUE;
+            case SDL_JOYAXISMOTION:
+                msg->wParam = sdlevent.jaxis.axis;
+                msg->lParam = sdlevent.jaxis.value;
+                return TRUE;
+#endif
+
             // These all map to WM_* things without any drama.
             case SDL_QUIT:
                 return TRUE;

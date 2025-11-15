@@ -618,6 +618,11 @@ BOOL CInput::CheckJoystick(INDEX iJoy)
     cai.cai_bExisting = (iAxis < ctAxes);
   }
 
+#ifdef PLATFORM_PSVITA
+  // Permanently enable joystick events since we're gonna be using them for menus as well
+  SDL_JoystickEventState(SDL_ENABLE);
+#endif
+
   return TRUE;
 }
 
@@ -627,7 +632,9 @@ void CInput::EnableInput(HWND hwnd)
   // skip if already enabled
   if( inp_bInputEnabled) return;
 
+#ifndef PLATFORM_PSVITA
   SDL_JoystickEventState(SDL_ENABLE);
+#endif
 
   // determine screen center position
   int winw, winh;
@@ -670,7 +677,9 @@ void CInput::DisableInput( void)
   // skip if allready disabled
   if( !inp_bInputEnabled) return;
 
+#ifndef PLATFORM_PSVITA
   SDL_JoystickEventState(SDL_DISABLE);
+#endif
 
   // show mouse on screen
   SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -783,7 +792,6 @@ void CInput::GetInput(BOOL bPreScan)
 
     static FLOAT fDXOld;
     static FLOAT fDYOld;
-    static TIME tmOldDelta;
     static CTimerValue tvBefore;
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
     TIME tmNowDelta = (tvNow-tvBefore).GetSeconds();
@@ -792,11 +800,11 @@ void CInput::GetInput(BOOL bPreScan)
     }
     tvBefore = tvNow;
 
-    FLOAT fDXSmooth = (fDXOld*tmOldDelta+fDX*tmNowDelta)/(tmOldDelta+tmNowDelta);
-    FLOAT fDYSmooth = (fDYOld*tmOldDelta+fDY*tmNowDelta)/(tmOldDelta+tmNowDelta);
+    FLOAT fDXSmooth = (fDXOld*inp_fDeltaTime+fDX*tmNowDelta)/(inp_fDeltaTime+tmNowDelta);
+    FLOAT fDYSmooth = (fDYOld*inp_fDeltaTime+fDY*tmNowDelta)/(inp_fDeltaTime+tmNowDelta);
     fDXOld = fDX;
     fDYOld = fDY;
-    tmOldDelta = tmNowDelta;
+    inp_fDeltaTime = tmNowDelta;
     if (inp_bFilterMouse) {
       fDX = fDXSmooth;
       fDY = fDYSmooth;
@@ -952,7 +960,7 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
     FLOAT fAxisReading = FLOAT(slAxisReading-cai.cai_slMin)/(cai.cai_slMax-cai.cai_slMin)*2.0f-1.0f;
 
     // set current axis value
-    cai.cai_fReading = fAxisReading;
+    cai.cai_fReading = fAxisReading * (inp_fDeltaTime * 60.f);
   }
 
   // if not pre-scanning

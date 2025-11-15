@@ -138,8 +138,8 @@ LONG   _iIPPortBufferLen = 0;
 CHAR* _szIPPortBufferLocal = NULL;
 LONG   _iIPPortBufferLocalLen = 0;
 
+static BOOL _bInitialized = FALSE;
 BOOL _bServer = FALSE;
-BOOL _bInitialized = FALSE;
 BOOL _bActivated = FALSE;
 BOOL _bActivatedLocal = FALSE;
 

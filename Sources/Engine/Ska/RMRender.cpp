@@ -89,7 +89,7 @@ static void CalculateRenderingData(CModelInstance &mi);
 static void ClearRenArrays();
 
 // load our 3x4 matrix from old-fashioned matrix+vector combination
-inline void MatrixVectorToMatrix12(Matrix12 &m12,const FLOATmatrix3D &m, const FLOAT3D &v)
+void MatrixVectorToMatrix12(Matrix12 &m12,const FLOATmatrix3D &m, const FLOAT3D &v)
 {
   m12[ 0] = m(1,1); m12[ 1] = m(1,2); m12[ 2] = m(1,3); m12[ 3] = v(1); 
   m12[ 4] = m(2,1); m12[ 5] = m(2,2); m12[ 6] = m(2,3); m12[ 7] = v(2); 
@@ -139,7 +139,7 @@ inline static void TransformVector(FLOAT3 &v, const Matrix12 &m)
   v[1] = m[4]*x + m[5]*y + m[ 6]*z + m[ 7];
   v[2] = m[8]*x + m[9]*y + m[10]*z + m[11];
 }
-inline void TransformVertex(GFXVertex &v, const Matrix12 &m)
+void TransformVertex(GFXVertex &v, const Matrix12 &m)
 {
   float x = v.x;
   float y = v.y;
@@ -150,7 +150,7 @@ inline void TransformVertex(GFXVertex &v, const Matrix12 &m)
 }
 
 // rotate vector with given matrix ( does not translate vector )
-inline void RotateVector(FLOAT3 &v, const Matrix12 &m)
+void RotateVector(FLOAT3 &v, const Matrix12 &m)
 {
   float x = v[0];
   float y = v[1];
@@ -216,7 +216,7 @@ void MatrixMultiplyCP(Matrix12 &c,const Matrix12 &m, const Matrix12 &n)
 }
 
 // make transpose matrix 
-inline void MatrixTranspose(Matrix12 &r, const Matrix12 &m)
+void MatrixTranspose(Matrix12 &r, const Matrix12 &m)
 {
   r[ 0] = m[ 0];
   r[ 5] = m[ 5];

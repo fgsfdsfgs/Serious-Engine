@@ -197,7 +197,9 @@ void CGfxLibrary::InitContext_OGL(void)
   pglFrontFace( GL_CCW);
   pglShadeModel( GL_SMOOTH);
   pglEnable( GL_SCISSOR_TEST);
+  #ifndef PLATFORM_PSVITA
   pglDrawBuffer( GL_BACK);
+  #endif
   pglAlphaFunc( GL_GEQUAL, 0.5f);
   pglColor4f( 1.0f, 1.0f, 1.0f, 1.0f);
   pglMatrixMode( GL_MODELVIEW);
@@ -393,6 +395,9 @@ void CGfxLibrary::InitContext_OGL(void)
   // OGL_CHECKERROR;
 
   // check if 32-bit textures are supported
+  #if PLATFORM_PSVITA
+  gl_ulFlags |= GLF_32BITTEXTURES;
+  #else
   GLuint uiTmpTex;
   const ULONG ulTmpTex = 0xFFFFFFFF;
   pglGenTextures( 1, &uiTmpTex);
@@ -404,7 +409,8 @@ void CGfxLibrary::InitContext_OGL(void)
   if( gliRet==8) gl_ulFlags |= GLF_32BITTEXTURES;
   pglDeleteTextures( 1, &uiTmpTex);
   OGL_CHECKERROR;
-  
+  #endif
+
   // setup fog and haze textures
   extern PIX _fog_pixSizeH;
   extern PIX _fog_pixSizeL;

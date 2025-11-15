@@ -155,6 +155,7 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
     if( _tpCurrent->tp_bSingleMipmap) break;
   }
 
+#ifndef PLATFORM_PSVITA
   // see if we need to generate and upload additional mipmaps (those under 1*N or N*1)
   if( !_tpCurrent->tp_bSingleMipmap && pixSizeU!=pixSizeV)
   { // prepare variables
@@ -262,6 +263,7 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
       iMip++;
     }
   }
+#endif
 
   // all done
   _pfGfxProfile.IncrementCounter( CGfxProfile::PCI_TEXTUREUPLOADS, 1);

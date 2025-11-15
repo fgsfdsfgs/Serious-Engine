@@ -83,6 +83,8 @@ public:
   POINT inp_ptOldMousePos;                          // old mouse position
   struct MouseSpeedControl inp_mscMouseSettings;    // system mouse settings
 
+  FLOAT inp_fDeltaTime;
+
   void SetKeyNames( void);                          // sets name for every key
   // check if a joystick exists
   BOOL CheckJoystick(INDEX iJoy);

@@ -20,10 +20,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <process.h>
 #endif
 
+#ifdef PLATFORM_PSVITA
+#include <vitasdk.h>
+#include <vitaGL.h>
+extern "C" SceUInt32 sceUserMainThreadStackSize = 256 * 1024;
+extern "C" unsigned int _pthread_stack_default_user = 256 * 1024;
+extern "C" unsigned int _newlib_heap_size_user = 256 * 1024 * 1024;
+#endif
+
 // !!! FIXME: rcg01082002 Do something with these.
 #ifdef PLATFORM_UNIX
   #include <Engine/Base/SDL/SDLEvents.h>
-  #if !defined(PLATFORM_MACOSX) && !defined(PLATFORM_FREEBSD)
+  #if !defined(PLATFORM_MACOSX) && !defined(PLATFORM_FREEBSD) && !defined(PLATFORM_PSVITA)
     #include <mntent.h>
   #endif
 #endif
@@ -286,7 +294,7 @@ static void UpdatePauseState(void)
 void LimitFrameRate(void)
 {
   // do not limit FPS on the Pandora, it's not powerfull enough and doesn't "iconise" games either
-  #if !defined(PLATFORM_PANDORA) && !defined(PLATFORM_PYRA)
+  #if !defined(PLATFORM_PANDORA) && !defined(PLATFORM_PYRA) && !defined(PLATFORM_PSVITA)
   // measure passed time for each loop
   static CTimerValue tvLast(-1.0f);
   CTimerValue tvNow   = _pTimer->GetHighPrecisionTimer();
@@ -413,6 +421,65 @@ void RunBrowser(const char *strUrl)
 #endif
 }
 
+#ifdef PLATFORM_PSVITA
+
+static WPARAM JoyButtonToMenuKey(const WPARAM wKey)
+{
+  static const WPARAM _awJoyMap[] = {
+    /*  0 TRIANGLE */ SDLK_UNKNOWN,
+    /*  1 CIRCLE   */ SDLK_ESCAPE,
+    /*  2 CROSS    */ SDLK_RETURN,
+    /*  3 SQUARE   */ SDLK_UNKNOWN,
+    /*  4 LTRIGGER */ SDLK_UNKNOWN,
+    /*  5 RTRIGGER */ SDLK_UNKNOWN,
+    /*  6 DOWN     */ SDLK_DOWN,
+    /*  7 LEFT     */ SDLK_LEFT,
+    /*  8 UP       */ SDLK_UP,
+    /*  9 RIGHT    */ SDLK_RIGHT,
+    /* 10 SELECT   */ SDLK_UNKNOWN,
+    /* 11 START    */ SDLK_ESCAPE,
+  };
+
+  if( wKey < ARRAYCOUNT(_awJoyMap) )
+    return _awJoyMap[wKey];
+
+  return SDLK_UNKNOWN;
+}
+
+// fake mouse position
+static FLOAT _flMousePos[2];
+static FLOAT _flMouseDelta[2];
+
+static void JoyMenuEvent(MSG& msg)
+{
+  // check if NETRICSA is on, which is for some reason separate from normal menus
+  const BOOL bComputerOn = _pGame->gm_bGameOn &&
+    (_pGame->gm_csComputerState == CS_ON || _pGame->gm_csComputerState == CS_TURNINGON);
+
+  // if this is a joystick message, translate it to keyboard message if controlling GUI, or if it translates to ESC
+  if (msg.message == WM_JOYBUTTONDOWN || msg.message == WM_JOYBUTTONUP) {
+    const WPARAM wTranslated = JoyButtonToMenuKey(msg.wParam);
+    if (bMenuActive || bComputerOn || msg.wParam == 11) {
+      // in normal menus enter is enter, but in the computer it acts as left mouse
+      if (bComputerOn && wTranslated == VK_RETURN) {
+        msg.message = (msg.message == WM_JOYBUTTONDOWN) ? WM_LBUTTONDOWN : WM_LBUTTONUP;
+        msg.wParam = 0;
+      } else {
+        msg.message = msg.message - WM_JOYBUTTONDOWN + WM_KEYDOWN;
+        msg.wParam = wTranslated;
+      }
+    }
+  } else if (msg.message == WM_JOYAXISMOTION && bComputerOn) {
+    const FLOAT flVal = msg.lParam / 2048.f;
+    _flMouseDelta[msg.wParam & 1] = (Abs(flVal) > 4.f) ? flVal : 0.f;
+  }
+
+  if (!bComputerOn)
+    _flMousePos[0] = _flMousePos[1] = 0.f;
+}
+
+#endif
+
 void LoadAndForceTexture(CTextureObject &to, CTextureObject *&pto, const CTFileName &fnm)
 {
   try {
@@ -433,9 +500,9 @@ static char *argv0 = NULL;
 void InitializeGame(void)
 {
   try {
-    #ifdef STATICALLY_LINKED
-      #define fnmExpanded NULL
-      CPrintF(TRANSV("Loading game library '%s'...\n"), "(statically linked)");
+    #ifdef STATIC_GAMELIBS
+      CTFileName fnmExpanded = "Game"+_strModExt;
+      CPrintF(TRANSV("Loading game library '%s'...\n"), (const char *)fnmExpanded);
     #else
       CTFileName fnmDLL;
       #ifndef NDEBUG
@@ -474,6 +541,26 @@ static void atexit_sdlquit(void) { static bool firsttime = true; if (firsttime) 
 
 BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 {
+#ifdef PLATFORM_PSVITA
+  constexpr int iVglMemFfp = 512 * 1024;
+  constexpr int iVglMemThresh = 12 * 1024 * 1024;
+  constexpr int iVglPoolSize = 48 * 1024 * 1024;
+
+  sceCtrlSetSamplingModeExt( SCE_CTRL_MODE_ANALOG_WIDE );
+  sceTouchSetSamplingState( SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_START );
+  scePowerSetArmClockFrequency( 444 );
+  scePowerSetBusClockFrequency( 222 );
+  scePowerSetGpuClockFrequency( 222 );
+  scePowerSetGpuXbarClockFrequency( 166 );
+  sceSysmoduleLoadModule( SCE_SYSMODULE_NET );
+
+  vglUseVram( GL_TRUE );
+  vglUseExtraMem( GL_TRUE );
+  vglUseTripleBuffering( GL_FALSE );
+  vglSetVertexPoolSize( iVglPoolSize );
+  vglInitExtended( iVglMemFfp, 960, 544, iVglMemThresh, SCE_GXM_MULTISAMPLE_NONE );
+#endif
+
 #ifdef PLATFORM_UNIX
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)
     FatalError("SDL_Init(VIDEO|AUDIO) failed. Reason: [%s].", SDL_GetError());
@@ -961,6 +1048,11 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
     // while there are any messages in the message queue
     MSG msg;
     while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE)) {
+#ifdef PLATFORM_PSVITA
+      // snoop through joystick events and use them to control the menus, if any are up
+      JoyMenuEvent(msg);
+#endif
+
       // if it is not a mouse message
       if( !(msg.message>=WM_MOUSEFIRST && msg.message<=WM_MOUSELAST) ) {
         // if not system key messages
@@ -1290,8 +1382,16 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
     // get real cursor position
     if( _pGame->gm_csComputerState!=CS_OFF && _pGame->gm_csComputerState!=CS_ONINBACKGROUND) {
       POINT pt;
+#ifdef PLATFORM_PSVITA
+      // inject our fake mouse position
+      _flMousePos[0] = Clamp(_flMousePos[0] + _flMouseDelta[0], 0.f, 960.f);
+      _flMousePos[1] = Clamp(_flMousePos[1] + _flMouseDelta[1], 0.f, 544.f);
+      pt.x = _flMousePos[0];
+      pt.y = _flMousePos[1];
+#else
       ::GetCursorPos(&pt);
       ::ScreenToClient(_hwndMain, &pt);
+#endif
       _pGame->ComputerMouseMove(pt.x, pt.y);
     }
 

@@ -809,8 +809,8 @@ void CShader::Read_t(CTStream *istrFile)
   strShaderInfo.ReadFromText_t(*istrFile, "Info: ");
 
   // create name of dll
-  #ifdef STATICALLY_LINKED
-    #define fnmExpanded NULL
+  #ifdef STATIC_GAMELIBS
+    CTFileName fnmExpanded = fnmDLL.FileName();
   #else
     #ifndef NDEBUG
       fnmDLL = fnmDLL.FileDir()+"Debug\\"+fnmDLL.FileName()+/*_strModExt+*/"D"+fnmDLL.FileExt();

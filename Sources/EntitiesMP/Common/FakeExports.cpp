@@ -1,0 +1,294 @@
+#include <Engine/Base/PSVita/FakeExports.h>
+class CDLLEntityClass;
+
+/* defs */
+
+extern "C" CDLLEntityClass CScorpman_DLLClass;
+extern "C" CDLLEntityClass CSoundHolder_DLLClass;
+extern "C" CDLLEntityClass CAreaMarker_DLLClass;
+extern "C" CDLLEntityClass CMessageHolder_DLLClass;
+extern "C" CDLLEntityClass CCamera_DLLClass;
+extern "C" CDLLEntityClass CMarker_DLLClass;
+extern "C" CDLLEntityClass CGizmo_DLLClass;
+extern "C" CDLLEntityClass CSummonerMarker_DLLClass;
+extern "C" CDLLEntityClass CWalker_DLLClass;
+extern "C" CDLLEntityClass CWorldSettingsController_DLLClass;
+extern "C" CDLLEntityClass CAirElemental_DLLClass;
+extern "C" CDLLEntityClass CTrigger_DLLClass;
+extern "C" CDLLEntityClass CPipebomb_DLLClass;
+extern "C" CDLLEntityClass CPlayerActionMarker_DLLClass;
+extern "C" CDLLEntityClass CBigHead_DLLClass;
+extern "C" CDLLEntityClass CModelDestruction_DLLClass;
+extern "C" CDLLEntityClass CGrunt_DLLClass;
+extern "C" CDLLEntityClass CTacticsChanger_DLLClass;
+extern "C" CDLLEntityClass CSwitch_DLLClass;
+extern "C" CDLLEntityClass CCrateBus_DLLClass;
+extern "C" CDLLEntityClass CEnvironmentBase_DLLClass;
+extern "C" CDLLEntityClass CEnvironmentMarker_DLLClass;
+extern "C" CDLLEntityClass CChainsawFreak_DLLClass;
+extern "C" CDLLEntityClass CEruptor_DLLClass;
+extern "C" CDLLEntityClass CScrollHolder_DLLClass;
+extern "C" CDLLEntityClass CShipMarker_DLLClass;
+extern "C" CDLLEntityClass CPlayer_DLLClass;
+extern "C" CDLLEntityClass CTacticsHolder_DLLClass;
+extern "C" CDLLEntityClass CBackgroundViewer_DLLClass;
+extern "C" CDLLEntityClass CAnimationHub_DLLClass;
+extern "C" CDLLEntityClass CCannonStatic_DLLClass;
+extern "C" CDLLEntityClass CMovingBrush_DLLClass;
+extern "C" CDLLEntityClass CProjectile_DLLClass;
+extern "C" CDLLEntityClass CWatchPlayers_DLLClass;
+extern "C" CDLLEntityClass CPlayerWeapons_DLLClass;
+extern "C" CDLLEntityClass CDragonman_DLLClass;
+extern "C" CDLLEntityClass CGuffy_DLLClass;
+extern "C" CDLLEntityClass CEnemySpawner_DLLClass;
+extern "C" CDLLEntityClass CExotechLarva_DLLClass;
+extern "C" CDLLEntityClass CKeyItem_DLLClass;
+extern "C" CDLLEntityClass CModelHolder2_DLLClass;
+extern "C" CDLLEntityClass CPyramidSpaceShipMarker_DLLClass;
+extern "C" CDLLEntityClass CShip_DLLClass;
+extern "C" CDLLEntityClass CTouchField_DLLClass;
+extern "C" CDLLEntityClass CAmmoPack_DLLClass;
+extern "C" CDLLEntityClass CHazeMarker_DLLClass;
+extern "C" CDLLEntityClass CDoorController_DLLClass;
+extern "C" CDLLEntityClass CCreditsHolder_DLLClass;
+extern "C" CDLLEntityClass CBeast_DLLClass;
+extern "C" CDLLEntityClass CBlendController_DLLClass;
+extern "C" CDLLEntityClass CArmorItem_DLLClass;
+extern "C" CDLLEntityClass CLarvaOffspring_DLLClass;
+extern "C" CDLLEntityClass CWeaponItem_DLLClass;
+extern "C" CDLLEntityClass CWater_DLLClass;
+extern "C" CDLLEntityClass CFlame_DLLClass;
+extern "C" CDLLEntityClass CMirrorMarker_DLLClass;
+extern "C" CDLLEntityClass CCrateRider_DLLClass;
+extern "C" CDLLEntityClass CMusicChanger_DLLClass;
+extern "C" CDLLEntityClass CLight_DLLClass;
+extern "C" CDLLEntityClass CEffectMarker_DLLClass;
+extern "C" CDLLEntityClass CPlayerView_DLLClass;
+extern "C" CDLLEntityClass CLightning_DLLClass;
+extern "C" CDLLEntityClass CGlobal_DLLClass;
+extern "C" CDLLEntityClass CFish_DLLClass;
+extern "C" CDLLEntityClass CMeteorShower_DLLClass;
+extern "C" CDLLEntityClass CMovingBrushMarker_DLLClass;
+extern "C" CDLLEntityClass CMusicHolder_DLLClass;
+extern "C" CDLLEntityClass CGravityMarker_DLLClass;
+extern "C" CDLLEntityClass CEnemyBase_DLLClass;
+extern "C" CDLLEntityClass CPhotoAlbum_DLLClass;
+extern "C" CDLLEntityClass CTimeController_DLLClass;
+extern "C" CDLLEntityClass CEnemyRunInto_DLLClass;
+extern "C" CDLLEntityClass CPyramidSpaceShip_DLLClass;
+extern "C" CDLLEntityClass CElemental_DLLClass;
+extern "C" CDLLEntityClass CGruntSka_DLLClass;
+extern "C" CDLLEntityClass CWoman_DLLClass;
+extern "C" CDLLEntityClass CDebris_DLLClass;
+extern "C" CDLLEntityClass CEnemyCounter_DLLClass;
+extern "C" CDLLEntityClass CParticlesHolder_DLLClass;
+extern "C" CDLLEntityClass CPlayerWeaponsEffects_DLLClass;
+extern "C" CDLLEntityClass CBouncer_DLLClass;
+extern "C" CDLLEntityClass CShooter_DLLClass;
+extern "C" CDLLEntityClass CEntityStateDisplay_DLLClass;
+extern "C" CDLLEntityClass CHeadman_DLLClass;
+extern "C" CDLLEntityClass CCannonBall_DLLClass;
+extern "C" CDLLEntityClass CGradientMarker_DLLClass;
+extern "C" CDLLEntityClass CDamager_DLLClass;
+extern "C" CDLLEntityClass CSanta_DLLClass;
+extern "C" CDLLEntityClass CReminder_DLLClass;
+extern "C" CDLLEntityClass CCameraMarker_DLLClass;
+extern "C" CDLLEntityClass CModelHolder3_DLLClass;
+extern "C" CDLLEntityClass CStormController_DLLClass;
+extern "C" CDLLEntityClass CBullet_DLLClass;
+extern "C" CDLLEntityClass CModelHolder_DLLClass;
+extern "C" CDLLEntityClass CRollingStone_DLLClass;
+extern "C" CDLLEntityClass CItem_DLLClass;
+extern "C" CDLLEntityClass CAmmoItem_DLLClass;
+extern "C" CDLLEntityClass CPendulum_DLLClass;
+extern "C" CDLLEntityClass CPowerUpItem_DLLClass;
+extern "C" CDLLEntityClass CSpinner_DLLClass;
+extern "C" CDLLEntityClass CHealthItem_DLLClass;
+extern "C" CDLLEntityClass CCopier_DLLClass;
+extern "C" CDLLEntityClass CHudPicHolder_DLLClass;
+extern "C" CDLLEntityClass CMessageItem_DLLClass;
+extern "C" CDLLEntityClass CBoneman_DLLClass;
+extern "C" CDLLEntityClass CSpawnerProjectile_DLLClass;
+extern "C" CDLLEntityClass CTeleport_DLLClass;
+extern "C" CDLLEntityClass CWatcher_DLLClass;
+extern "C" CDLLEntityClass CFogMarker_DLLClass;
+extern "C" CDLLEntityClass CVoiceHolder_DLLClass;
+extern "C" CDLLEntityClass CCannonRotating_DLLClass;
+extern "C" CDLLEntityClass CExotechLarvaCharger_DLLClass;
+extern "C" CDLLEntityClass CFireworks_DLLClass;
+extern "C" CDLLEntityClass CEnemyDive_DLLClass;
+extern "C" CDLLEntityClass CExotechLarvaBattery_DLLClass;
+extern "C" CDLLEntityClass CDevilProjectile_DLLClass;
+extern "C" CDLLEntityClass CEyeman_DLLClass;
+extern "C" CDLLEntityClass CSummoner_DLLClass;
+extern "C" CDLLEntityClass CSeriousBomb_DLLClass;
+extern "C" CDLLEntityClass CPlayerMarker_DLLClass;
+extern "C" CDLLEntityClass CEffector_DLLClass;
+extern "C" CDLLEntityClass CTextFXHolder_DLLClass;
+extern "C" CDLLEntityClass CNavigationMarker_DLLClass;
+extern "C" CDLLEntityClass CCounter_DLLClass;
+extern "C" CDLLEntityClass CDestroyableArchitecture_DLLClass;
+extern "C" CDLLEntityClass CWorldBase_DLLClass;
+extern "C" CDLLEntityClass CBloodSpray_DLLClass;
+extern "C" CDLLEntityClass CPlayerAnimator_DLLClass;
+extern "C" CDLLEntityClass CAirShockwave_DLLClass;
+extern "C" CDLLEntityClass CDemon_DLLClass;
+extern "C" CDLLEntityClass CDevilMarker_DLLClass;
+extern "C" CDLLEntityClass CGravityRouter_DLLClass;
+extern "C" CDLLEntityClass CAnimationChanger_DLLClass;
+extern "C" CDLLEntityClass CWorldLink_DLLClass;
+extern "C" CDLLEntityClass CTwister_DLLClass;
+extern "C" CDLLEntityClass CBasicEffect_DLLClass;
+extern "C" CDLLEntityClass CEnemyMarker_DLLClass;
+extern "C" CDLLEntityClass CTerrainEntity_DLLClass;
+extern "C" CDLLEntityClass CWerebull_DLLClass;
+extern "C" CDLLEntityClass CDevil_DLLClass;
+extern "C" CDLLEntityClass CEnvironmentParticlesHolder_DLLClass;
+extern "C" CDLLEntityClass CEnemyFly_DLLClass;
+
+/* exports */
+
+static CFakeLib exp_EntitiesMP("EntitiesMP", {
+  { "CTouchField_DLLClass", (void*)&CTouchField_DLLClass }, 
+  { "CMusicChanger_DLLClass", (void*)&CMusicChanger_DLLClass }, 
+  { "CPyramidSpaceShipMarker_DLLClass", (void*)&CPyramidSpaceShipMarker_DLLClass }, 
+  { "CCrateRider_DLLClass", (void*)&CCrateRider_DLLClass }, 
+  { "CTacticsChanger_DLLClass", (void*)&CTacticsChanger_DLLClass }, 
+  { "CScorpman_DLLClass", (void*)&CScorpman_DLLClass }, 
+  { "CEnvironmentBase_DLLClass", (void*)&CEnvironmentBase_DLLClass }, 
+  { "CEnemyFly_DLLClass", (void*)&CEnemyFly_DLLClass }, 
+  { "CGravityRouter_DLLClass", (void*)&CGravityRouter_DLLClass }, 
+  { "CBloodSpray_DLLClass", (void*)&CBloodSpray_DLLClass }, 
+  { "CArmorItem_DLLClass", (void*)&CArmorItem_DLLClass }, 
+  { "CWatcher_DLLClass", (void*)&CWatcher_DLLClass }, 
+  { "CBeast_DLLClass", (void*)&CBeast_DLLClass }, 
+  { "CSpinner_DLLClass", (void*)&CSpinner_DLLClass }, 
+  { "CDamager_DLLClass", (void*)&CDamager_DLLClass }, 
+  { "CAmmoItem_DLLClass", (void*)&CAmmoItem_DLLClass }, 
+  { "CPlayerAnimator_DLLClass", (void*)&CPlayerAnimator_DLLClass }, 
+  { "CModelHolder3_DLLClass", (void*)&CModelHolder3_DLLClass }, 
+  { "CGravityMarker_DLLClass", (void*)&CGravityMarker_DLLClass }, 
+  { "CGuffy_DLLClass", (void*)&CGuffy_DLLClass }, 
+  { "CWorldLink_DLLClass", (void*)&CWorldLink_DLLClass }, 
+  { "CBigHead_DLLClass", (void*)&CBigHead_DLLClass }, 
+  { "CSummonerMarker_DLLClass", (void*)&CSummonerMarker_DLLClass }, 
+  { "CFireworks_DLLClass", (void*)&CFireworks_DLLClass }, 
+  { "CCannonRotating_DLLClass", (void*)&CCannonRotating_DLLClass }, 
+  { "CElemental_DLLClass", (void*)&CElemental_DLLClass }, 
+  { "CAirElemental_DLLClass", (void*)&CAirElemental_DLLClass }, 
+  { "CDoorController_DLLClass", (void*)&CDoorController_DLLClass }, 
+  { "CLight_DLLClass", (void*)&CLight_DLLClass }, 
+  { "CEnvironmentParticlesHolder_DLLClass", (void*)&CEnvironmentParticlesHolder_DLLClass }, 
+  { "CRollingStone_DLLClass", (void*)&CRollingStone_DLLClass }, 
+  { "CScrollHolder_DLLClass", (void*)&CScrollHolder_DLLClass }, 
+  { "CExotechLarvaCharger_DLLClass", (void*)&CExotechLarvaCharger_DLLClass }, 
+  { "CEnemySpawner_DLLClass", (void*)&CEnemySpawner_DLLClass }, 
+  { "CAnimationHub_DLLClass", (void*)&CAnimationHub_DLLClass }, 
+  { "CCrateBus_DLLClass", (void*)&CCrateBus_DLLClass }, 
+  { "CHeadman_DLLClass", (void*)&CHeadman_DLLClass }, 
+  { "CGlobal_DLLClass", (void*)&CGlobal_DLLClass }, 
+  { "CWorldSettingsController_DLLClass", (void*)&CWorldSettingsController_DLLClass }, 
+  { "CReminder_DLLClass", (void*)&CReminder_DLLClass }, 
+  { "CFlame_DLLClass", (void*)&CFlame_DLLClass }, 
+  { "CKeyItem_DLLClass", (void*)&CKeyItem_DLLClass }, 
+  { "CCannonStatic_DLLClass", (void*)&CCannonStatic_DLLClass }, 
+  { "CEffector_DLLClass", (void*)&CEffector_DLLClass }, 
+  { "CGradientMarker_DLLClass", (void*)&CGradientMarker_DLLClass }, 
+  { "CProjectile_DLLClass", (void*)&CProjectile_DLLClass }, 
+  { "CMovingBrushMarker_DLLClass", (void*)&CMovingBrushMarker_DLLClass }, 
+  { "CAnimationChanger_DLLClass", (void*)&CAnimationChanger_DLLClass }, 
+  { "CAreaMarker_DLLClass", (void*)&CAreaMarker_DLLClass }, 
+  { "CCameraMarker_DLLClass", (void*)&CCameraMarker_DLLClass }, 
+  { "CNavigationMarker_DLLClass", (void*)&CNavigationMarker_DLLClass }, 
+  { "CDragonman_DLLClass", (void*)&CDragonman_DLLClass }, 
+  { "CShooter_DLLClass", (void*)&CShooter_DLLClass }, 
+  { "CChainsawFreak_DLLClass", (void*)&CChainsawFreak_DLLClass }, 
+  { "CTacticsHolder_DLLClass", (void*)&CTacticsHolder_DLLClass }, 
+  { "CStormController_DLLClass", (void*)&CStormController_DLLClass }, 
+  { "CDevilMarker_DLLClass", (void*)&CDevilMarker_DLLClass }, 
+  { "CEnemyDive_DLLClass", (void*)&CEnemyDive_DLLClass }, 
+  { "CShipMarker_DLLClass", (void*)&CShipMarker_DLLClass }, 
+  { "CExotechLarvaBattery_DLLClass", (void*)&CExotechLarvaBattery_DLLClass }, 
+  { "CHudPicHolder_DLLClass", (void*)&CHudPicHolder_DLLClass }, 
+  { "CPowerUpItem_DLLClass", (void*)&CPowerUpItem_DLLClass }, 
+  { "CEnvironmentMarker_DLLClass", (void*)&CEnvironmentMarker_DLLClass }, 
+  { "CWerebull_DLLClass", (void*)&CWerebull_DLLClass }, 
+  { "CDevil_DLLClass", (void*)&CDevil_DLLClass }, 
+  { "CShip_DLLClass", (void*)&CShip_DLLClass }, 
+  { "CEffectMarker_DLLClass", (void*)&CEffectMarker_DLLClass }, 
+  { "CPlayer_DLLClass", (void*)&CPlayer_DLLClass }, 
+  { "CTimeController_DLLClass", (void*)&CTimeController_DLLClass }, 
+  { "CBoneman_DLLClass", (void*)&CBoneman_DLLClass }, 
+  { "CAirShockwave_DLLClass", (void*)&CAirShockwave_DLLClass }, 
+  { "CMeteorShower_DLLClass", (void*)&CMeteorShower_DLLClass }, 
+  { "CWater_DLLClass", (void*)&CWater_DLLClass }, 
+  { "CPlayerActionMarker_DLLClass", (void*)&CPlayerActionMarker_DLLClass }, 
+  { "CWalker_DLLClass", (void*)&CWalker_DLLClass }, 
+  { "CPipebomb_DLLClass", (void*)&CPipebomb_DLLClass }, 
+  { "CEnemyBase_DLLClass", (void*)&CEnemyBase_DLLClass }, 
+  { "CExotechLarva_DLLClass", (void*)&CExotechLarva_DLLClass }, 
+  { "CBasicEffect_DLLClass", (void*)&CBasicEffect_DLLClass }, 
+  { "CMusicHolder_DLLClass", (void*)&CMusicHolder_DLLClass }, 
+  { "CCamera_DLLClass", (void*)&CCamera_DLLClass }, 
+  { "CLightning_DLLClass", (void*)&CLightning_DLLClass }, 
+  { "CGrunt_DLLClass", (void*)&CGrunt_DLLClass }, 
+  { "CMovingBrush_DLLClass", (void*)&CMovingBrush_DLLClass }, 
+  { "CSoundHolder_DLLClass", (void*)&CSoundHolder_DLLClass }, 
+  { "CWeaponItem_DLLClass", (void*)&CWeaponItem_DLLClass }, 
+  { "CPlayerMarker_DLLClass", (void*)&CPlayerMarker_DLLClass }, 
+  { "CBlendController_DLLClass", (void*)&CBlendController_DLLClass }, 
+  { "CLarvaOffspring_DLLClass", (void*)&CLarvaOffspring_DLLClass }, 
+  { "CSwitch_DLLClass", (void*)&CSwitch_DLLClass }, 
+  { "CPlayerWeaponsEffects_DLLClass", (void*)&CPlayerWeaponsEffects_DLLClass }, 
+  { "CPyramidSpaceShip_DLLClass", (void*)&CPyramidSpaceShip_DLLClass }, 
+  { "CCannonBall_DLLClass", (void*)&CCannonBall_DLLClass }, 
+  { "CDevilProjectile_DLLClass", (void*)&CDevilProjectile_DLLClass }, 
+  { "CSeriousBomb_DLLClass", (void*)&CSeriousBomb_DLLClass }, 
+  { "CModelHolder2_DLLClass", (void*)&CModelHolder2_DLLClass }, 
+  { "CCounter_DLLClass", (void*)&CCounter_DLLClass }, 
+  { "CPlayerView_DLLClass", (void*)&CPlayerView_DLLClass }, 
+  { "CGizmo_DLLClass", (void*)&CGizmo_DLLClass }, 
+  { "CSanta_DLLClass", (void*)&CSanta_DLLClass }, 
+  { "CMessageItem_DLLClass", (void*)&CMessageItem_DLLClass }, 
+  { "CPendulum_DLLClass", (void*)&CPendulum_DLLClass }, 
+  { "CSpawnerProjectile_DLLClass", (void*)&CSpawnerProjectile_DLLClass }, 
+  { "CModelHolder_DLLClass", (void*)&CModelHolder_DLLClass }, 
+  { "CParticlesHolder_DLLClass", (void*)&CParticlesHolder_DLLClass }, 
+  { "CHazeMarker_DLLClass", (void*)&CHazeMarker_DLLClass }, 
+  { "CBouncer_DLLClass", (void*)&CBouncer_DLLClass }, 
+  { "CEnemyCounter_DLLClass", (void*)&CEnemyCounter_DLLClass }, 
+  { "CEruptor_DLLClass", (void*)&CEruptor_DLLClass }, 
+  { "CDebris_DLLClass", (void*)&CDebris_DLLClass }, 
+  { "CTwister_DLLClass", (void*)&CTwister_DLLClass }, 
+  { "CCopier_DLLClass", (void*)&CCopier_DLLClass }, 
+  { "CWatchPlayers_DLLClass", (void*)&CWatchPlayers_DLLClass }, 
+  { "CMarker_DLLClass", (void*)&CMarker_DLLClass }, 
+  { "CTextFXHolder_DLLClass", (void*)&CTextFXHolder_DLLClass }, 
+  { "CFogMarker_DLLClass", (void*)&CFogMarker_DLLClass }, 
+  { "CAmmoPack_DLLClass", (void*)&CAmmoPack_DLLClass }, 
+  { "CEntityStateDisplay_DLLClass", (void*)&CEntityStateDisplay_DLLClass }, 
+  { "CMirrorMarker_DLLClass", (void*)&CMirrorMarker_DLLClass }, 
+  { "CTrigger_DLLClass", (void*)&CTrigger_DLLClass }, 
+  { "CHealthItem_DLLClass", (void*)&CHealthItem_DLLClass }, 
+  { "CPlayerWeapons_DLLClass", (void*)&CPlayerWeapons_DLLClass }, 
+  { "CBackgroundViewer_DLLClass", (void*)&CBackgroundViewer_DLLClass }, 
+  { "CFish_DLLClass", (void*)&CFish_DLLClass }, 
+  { "CEnemyRunInto_DLLClass", (void*)&CEnemyRunInto_DLLClass }, 
+  { "CItem_DLLClass", (void*)&CItem_DLLClass }, 
+  { "CDemon_DLLClass", (void*)&CDemon_DLLClass }, 
+  { "CVoiceHolder_DLLClass", (void*)&CVoiceHolder_DLLClass }, 
+  { "CMessageHolder_DLLClass", (void*)&CMessageHolder_DLLClass }, 
+  { "CModelDestruction_DLLClass", (void*)&CModelDestruction_DLLClass }, 
+  { "CTerrainEntity_DLLClass", (void*)&CTerrainEntity_DLLClass }, 
+  { "CWorldBase_DLLClass", (void*)&CWorldBase_DLLClass }, 
+  { "CSummoner_DLLClass", (void*)&CSummoner_DLLClass }, 
+  { "CGruntSka_DLLClass", (void*)&CGruntSka_DLLClass }, 
+  { "CPhotoAlbum_DLLClass", (void*)&CPhotoAlbum_DLLClass }, 
+  { "CEyeman_DLLClass", (void*)&CEyeman_DLLClass }, 
+  { "CEnemyMarker_DLLClass", (void*)&CEnemyMarker_DLLClass }, 
+  { "CTeleport_DLLClass", (void*)&CTeleport_DLLClass }, 
+  { "CDestroyableArchitecture_DLLClass", (void*)&CDestroyableArchitecture_DLLClass }, 
+  { "CCreditsHolder_DLLClass", (void*)&CCreditsHolder_DLLClass }, 
+  { "CWoman_DLLClass", (void*)&CWoman_DLLClass }, 
+  { "CBullet_DLLClass", (void*)&CBullet_DLLClass }, 
+});

@@ -30,7 +30,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // !!! FIXME: use SDL timer code instead and rdtsc never?
 #if (defined PLATFORM_UNIX) && !defined(__GNU_INLINE_X86_32__)
-#define USE_GETTIMEOFDAY 1
+  #ifdef PLATFORM_PSVITA
+    #define USE_SDLTICKS 1
+  #else
+    #define USE_GETTIMEOFDAY 1
+  #endif
 #endif
 
 #if USE_GETTIMEOFDAY
@@ -45,7 +49,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Read the Pentium TimeStampCounter (or something like that).
 static inline __int64 ReadTSC(void)
 {
-#if USE_GETTIMEOFDAY
+#ifdef USE_GETTIMEOFDAY
 #if defined(PLATFORM_PANDORA) || defined(PLATFORM_PYRA)
   struct timespec tp;
   clock_gettime(CLOCK_MONOTONIC, &tp);
@@ -55,6 +59,10 @@ static inline __int64 ReadTSC(void)
   gettimeofday(&tv, NULL);
   return( (((__int64) tv.tv_sec) * 1000000) + ((__int64) tv.tv_usec) );
 #endif
+
+#elif (defined USE_SDLTICKS)
+  return SDL_GetPerformanceCounter();
+
 #elif (defined __MSVC_INLINE__)
   __int64 mmRet;
   __asm {
@@ -329,6 +337,9 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   #else
   tm_llCPUSpeedHZ = tm_llPerformanceCounterFrequency = 1000000;
   #endif
+
+#elif USE_SDLTICKS
+  tm_llCPUSpeedHZ = tm_llPerformanceCounterFrequency = SDL_GetPerformanceFrequency();
 
 #elif PLATFORM_WIN32
   { // this part of code must be executed as precisely as possible

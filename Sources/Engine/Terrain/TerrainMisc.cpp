@@ -310,7 +310,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
   if(!bFixSize) {
     // max vector of bbox in incremented for one, because first vertex is at 0,0,0 in world and in heightmap is at 1,1
 #ifdef __arm__
-#if defined(PLATFORM_PANDORA) || defined(PLATFORM_PYRA)
+#if defined(PLATFORM_PANDORA) || defined(PLATFORM_PYRA) || defined(PLATFORM_PSVITA)
   #define Isinf(a) (((*(unsigned int*)&a)&0x7fffffff)==0x7f800000)
 #else
   #define Isinf isinff
