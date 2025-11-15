@@ -501,6 +501,10 @@ void CCommunicationInterface::SetNonBlocking_t(void)
     ThrowF_t(TRANS("Cannot set socket to non-blocking mode. %s"), 
       (const char*)GetSocketError(WSAGetLastError()));
   }
+#elif defined(PLATFORM_PSVITA)
+  ULONG ulTrue = 1;
+  setsockopt(cci_hSocket, SOL_SOCKET, SO_NONBLOCK, &ulTrue, sizeof(ulTrue));
+  setsockopt(cci_hSocket, SOL_SOCKET, SO_BROADCAST, &ulTrue, sizeof(ulTrue));
 #else
   int flags = fcntl(cci_hSocket, F_GETFL);
   int failed = flags;

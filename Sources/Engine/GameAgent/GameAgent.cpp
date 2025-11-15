@@ -233,6 +233,10 @@ void _initializeWinsock(void)
     _uninitWinsock();
     return;
   }
+#elif defined(PLATFORM_PSVITA)
+  ULONG ulTrue = 1;
+  setsockopt(_socket, SOL_SOCKET, SO_NONBLOCK, &ulTrue, sizeof(ulTrue));
+  setsockopt(_socket, SOL_SOCKET, SO_BROADCAST, &ulTrue, sizeof(ulTrue));
 #else
   int flags = fcntl(_socket, F_GETFL);
   int failed = flags;
