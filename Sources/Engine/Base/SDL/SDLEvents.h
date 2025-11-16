@@ -79,6 +79,8 @@ void DispatchMessage(MSG *msg);
 #define VK_F10            SDLK_F10
 #define VK_F11            SDLK_F11
 #define VK_F12            SDLK_F12
+#define VK_F23            SDLK_F23
+#define VK_F24            SDLK_F24
 #define VK_HOME           SDLK_HOME
 #define VK_INSERT         SDLK_INSERT
 #define VK_LCONTROL       SDLK_LCTRL

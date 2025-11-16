@@ -3168,6 +3168,20 @@ BOOL CGameMenu::OnKeyDown( int iVKey)
       return TRUE;
     }
     break;
+#ifdef PLATFORM_PSVITA
+  // R applies
+  case VK_F24:
+    // there are 3 different apply buttons, but only mgVarApply can't be navigated to without the mouse
+    // but for consistency we'll activate all of them
+    if (pgmCurrentMenu == &gmVarMenu && mgVarApply.mg_bEnabled)
+      mgVarApply.OnActivate();
+    else if (pgmCurrentMenu == &gmVideoOptionsMenu && mgVideoOptionsApply.mg_bEnabled)
+      mgVideoOptionsApply.OnActivate();
+    else if (pgmCurrentMenu == &gmAudioOptionsMenu && mgAudioOptionsApply.mg_bEnabled)
+      mgAudioOptionsApply.OnActivate();
+    break;
+#endif
+
   }
 
   // key is not handled

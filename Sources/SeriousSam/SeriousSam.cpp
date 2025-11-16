@@ -426,17 +426,17 @@ void RunBrowser(const char *strUrl)
 static WPARAM JoyButtonToMenuKey(const WPARAM wKey)
 {
   static const WPARAM _awJoyMap[] = {
-    /*  0 TRIANGLE */ SDLK_UNKNOWN,
+    /*  0 TRIANGLE */ SDLK_BACKSPACE,
     /*  1 CIRCLE   */ SDLK_ESCAPE,
     /*  2 CROSS    */ SDLK_RETURN,
     /*  3 SQUARE   */ SDLK_UNKNOWN,
-    /*  4 LTRIGGER */ SDLK_UNKNOWN,
-    /*  5 RTRIGGER */ SDLK_UNKNOWN,
+    /*  4 LTRIGGER */ SDLK_F23,
+    /*  5 RTRIGGER */ SDLK_F24,
     /*  6 DOWN     */ SDLK_DOWN,
     /*  7 LEFT     */ SDLK_LEFT,
     /*  8 UP       */ SDLK_UP,
     /*  9 RIGHT    */ SDLK_RIGHT,
-    /* 10 SELECT   */ SDLK_UNKNOWN,
+    /* 10 SELECT   */ SDLK_F1,
     /* 11 START    */ SDLK_ESCAPE,
   };
 
