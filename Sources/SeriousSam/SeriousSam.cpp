@@ -1467,6 +1467,21 @@ void CheckModReload(void)
     _execv(strCommand, argv);
     MessageBoxA(0, "Error launching the Mod!\n", "Serious Sam", MB_OK|MB_ICONERROR);
   }
+#elif defined(PLATFORM_PSVITA)
+  if (_fnmModToLoad!="") {
+    const char *argv[7];
+    CTString strMod = _fnmModToLoad.FileName();
+    argv[0] = "+game";
+    argv[1] = strMod;
+    argv[2] = NULL;
+    if (_strModServerJoin!="") {
+      argv[2] = "+connect";
+      argv[3] = _strModServerJoin;
+      argv[4] = "+quickjoin";
+      argv[5] = NULL;
+    }
+    sceAppMgrLoadExec("app0:/eboot.bin", (char **)argv, NULL);
+  }
 #else
     STUBBED("reload ourself?");
 #endif
