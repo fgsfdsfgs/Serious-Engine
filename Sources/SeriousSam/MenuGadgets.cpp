@@ -442,6 +442,14 @@ void CMGEdit::OnActivate(void)
   mg_iCursorPos = strlen(mg_strText);
   mg_bEditing = TRUE;
   _bEditingString = TRUE;
+#ifdef PLATFORM_PSVITA
+  if(_pInput && _pInput->IsOnScreenKeyboardSupported())
+  {
+    const BOOL bReturn = _pInput->GetOnScreenKeyboardInput(mg_strText, mg_strText, 1024);
+    mg_iCursorPos = strlen(mg_strText);
+    OnKeyDown(bReturn ? VK_RETURN : VK_ESCAPE);
+  }
+#endif
 }
 
 

@@ -984,6 +984,16 @@ LONG CInput::PlatformGetJoystickCount(void)
   return((LONG) joyGetNumDevs());
 }
 
+BOOL CInput::IsOnScreenKeyboardSupported(void) const
+{
+  return FALSE;
+}
+
+BOOL CInput::GetOnScreenKeyboardInput(const CTString& strInitText, CTString& strOutText, const ULONG iOutMax)
+{
+  return FALSE;
+}
+
 #endif //PLATFORM_WIN32
 
 // end of Win32Input.cpp ...

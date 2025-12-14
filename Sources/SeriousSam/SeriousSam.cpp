@@ -459,7 +459,7 @@ static void JoyMenuEvent(MSG& msg)
   // if this is a joystick message, translate it to keyboard message if controlling GUI, or if it translates to ESC
   if (msg.message == WM_JOYBUTTONDOWN || msg.message == WM_JOYBUTTONUP) {
     const WPARAM wTranslated = JoyButtonToMenuKey(msg.wParam);
-    if (bMenuActive || bComputerOn || msg.wParam == 11) {
+    if (bMenuActive || bComputerOn || msg.wParam == 11 || (_pGame && _pGame->gm_csConsoleState!=CS_OFF)) {
       // in normal menus enter is enter, but in the computer it acts as left mouse
       if (bComputerOn && wTranslated == VK_RETURN) {
         msg.message = (msg.message == WM_JOYBUTTONDOWN) ? WM_LBUTTONDOWN : WM_LBUTTONUP;

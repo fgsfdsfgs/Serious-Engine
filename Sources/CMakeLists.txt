@@ -226,6 +226,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_CO
     		add_definitions(-DPLATFORM_PSVITA=1)
     		add_definitions(-DPRAGMA_ONCE=1)
     		add_compile_options(-fno-short-enums -fno-optimize-sibling-calls)
+    		list(APPEND ADDITIONAL_ENGINE_SRCS Engine/Base/PSVita/PSVitaInput.cpp)
 	endif()
 	
         if(MACOSX OR LINUX OR FREEBSD)

@@ -136,6 +136,9 @@ public:
   // rcg02042003 hack for SDL vs. Win32.
   void ClearRelativeMouseMotion(void);
 
+  BOOL IsOnScreenKeyboardSupported(void) const;
+  BOOL GetOnScreenKeyboardInput(const CTString& strInitText, CTString& strOutText, const ULONG iOutMax);
+
 protected:
   BOOL PlatformInit(void); /* rcg10072001 platform-specific construction */
   BOOL PlatformSetKeyNames(void); /* rcg10072001 platform-specific code */

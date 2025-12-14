@@ -1016,6 +1016,20 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
   return TRUE;
 }
 
+#ifndef PLATFORM_PSVITA
+
+BOOL CInput::IsOnScreenKeyboardSupported(void) const
+{
+  return FALSE;
+}
+
+BOOL CInput::GetOnScreenKeyboardInput(const CTString& strInitText, CTString& strOutText, const ULONG iOutMax)
+{
+  return FALSE;
+}
+
+#endif
+
 // end of SDLInput.cpp ...
 
 

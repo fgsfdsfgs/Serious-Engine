@@ -523,6 +523,17 @@ static void Key_PgDn( BOOL bShift)
 }
 
 
+static void Key_OSK( void)
+{
+  if(_pInput && _pInput->IsOnScreenKeyboardSupported())
+  {
+    const BOOL bReturn = _pInput->GetOnScreenKeyboardInput(strEditingLine, strEditingLine, 1024);
+    iCursorPos = strlen(strEditingLine);
+    if(bReturn) Key_Return();
+  }
+}
+
+
 void CGame::ConsoleKeyDown( MSG msg)
 {
   // if console is off
@@ -544,6 +555,9 @@ void CGame::ConsoleKeyDown( MSG msg)
   case VK_RIGHT:   if( iCursorPos < strlen(strEditingLine)) iCursorPos++;  break;
   case VK_HOME:    iCursorPos = 0;                       break;
   case VK_END:     iCursorPos = strlen(strEditingLine);  break;
+#ifdef PLATFORM_PSVITA
+  case VK_F24:     Key_OSK(); break;
+#endif
   }
 }
 
