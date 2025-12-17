@@ -1162,8 +1162,8 @@ void CMGFileButton::OnActivate(void)
       _strOrgDescription = EMPTYSLOTSTRING;
     }
     mg_pstrToChange = &_strTmpDescription;
-    StartEdit();
     mg_iState = FBS_SAVENAME;
+    StartEdit();
   }
 }
 BOOL CMGFileButton::OnKeyDown(int iVKey)
@@ -1176,8 +1176,8 @@ BOOL CMGFileButton::OnKeyDown(int iVKey)
           _strOrgDescription = mg_strText;
           _strTmpDescription = mg_strText;
           mg_pstrToChange = &_strTmpDescription;
-          StartEdit();
           mg_iState = FBS_RENAME;
+          StartEdit();
         }
         return TRUE;
       } else if (iVKey == VK_DELETE) {
