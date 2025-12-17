@@ -838,6 +838,11 @@ CTFileStream::CTFileStream(void)
   fstrm_iZipHandle = -1;
   fstrm_iZipLocation = 0;
   fstrm_pubZipBuffer = NULL;
+#ifdef PLATFORM_PSVITA
+  fstrm_pubBuf = NULL;
+  fstrm_slBufSize = fstrm_slBufCap = 0;
+  fstrm_iBufPos = 0;
+#endif
 }
 
 /*
@@ -849,6 +854,13 @@ CTFileStream::~CTFileStream(void)
   if (fstrm_pFile != NULL || fstrm_iZipHandle!=-1) {
     Close();
   }
+#ifdef PLATFORM_PSVITA
+  // ensure file buffer is freed
+  if (fstrm_pubBuf) {
+    FreeMemory(fstrm_pubBuf);
+    fstrm_pubBuf = NULL;
+  }
+#endif
 }
 
 /*
@@ -965,6 +977,20 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   fstrm_bReadOnly = FALSE;
   // add this newly created file into opened stream list
   _plhOpenedStreams->AddTail( strm_lnListNode);
+
+#ifdef PLATFORM_PSVITA
+  if (cm == CreateMode::CM_BINARY_BUFFERED)
+  {
+    // buffer output streams to reduce filesystem accesses, which are extremely slow in larger amounts on the Vita
+    fstrm_pubBuf = (UBYTE*)AllocMemory(fstrm_slBufStep);
+    if (!fstrm_pubBuf)
+      Throw_t(TRANS("Cannot allocate stream buffer for `%s': out of memory"),
+        (const char *) (CTString&)fnmFullFileName);
+    fstrm_slBufCap = fstrm_slBufStep;
+  }
+  fstrm_slBufSize = 0;
+  fstrm_iBufPos = 0;
+#endif
 }
 
 /*
@@ -985,6 +1011,17 @@ void CTFileStream::Close(void)
 
   // if file on disk
   if (fstrm_pFile != NULL) {
+#ifdef PLATFORM_PSVITA
+    // if the stream is buffered, flush it into the actual file and free the buffers
+    if (fstrm_pubBuf && fstrm_slBufSize) {
+      fwrite(fstrm_pubBuf, fstrm_slBufSize, 1, fstrm_pFile);
+      FreeMemory(fstrm_pubBuf);
+      fstrm_pubBuf = NULL;
+      fstrm_slBufSize = 0;
+      fstrm_slBufCap = 0;
+      fstrm_iBufPos = 0;
+    }
+#endif
     // close file
     fclose( fstrm_pFile);
     fstrm_pFile = NULL;
@@ -1030,6 +1067,18 @@ void CTFileStream::Read_t(void *pvBuffer, SLONG slSize)
     return;
   }
 
+#ifdef PLATFORM_PSVITA
+  if (fstrm_pubBuf) {
+    if (fstrm_iBufPos + slSize > fstrm_slBufSize)
+      slSize = fstrm_slBufSize - fstrm_iBufPos;
+    if (slSize) {
+      memcpy(pvBuffer, fstrm_pubBuf + fstrm_iBufPos, slSize);
+      fstrm_iBufPos += slSize;
+    }
+    return;
+  }
+#endif
+
   fread(pvBuffer, slSize, 1, fstrm_pFile);
 }
 
@@ -1039,6 +1088,20 @@ void CTFileStream::Write_t(const void *pvBuffer, SLONG slSize)
   if(fstrm_bReadOnly || fstrm_iZipHandle != -1) {
     throw "Stream is read-only!";
   }
+
+#ifdef PLATFORM_PSVITA
+  if (fstrm_pubBuf) {
+    // if we're writing to the end of the buffer, expand it
+    const SLONG slWriteEnd = fstrm_iBufPos + slSize;
+    ExpandBuffer(slWriteEnd);
+    // copy the data to the buffer and set the end
+    memcpy(fstrm_pubBuf + fstrm_iBufPos, pvBuffer, slSize);
+    fstrm_iBufPos = slWriteEnd;
+    if (fstrm_iBufPos > fstrm_slBufSize)
+      fstrm_slBufSize = fstrm_iBufPos;
+    return;
+  }
+#endif
 
   fwrite(pvBuffer, slSize, 1, fstrm_pFile);
 }
@@ -1053,6 +1116,20 @@ void CTFileStream::Seek_t(SLONG slOffset, enum SeekDir sd)
     case SD_END: fstrm_iZipLocation = GetSize_t() + slOffset; break;
     }
   } else {
+#ifdef PLATFORM_PSVITA
+    if (fstrm_pubBuf) {
+      INDEX iOldPos = fstrm_iBufPos;
+      switch(sd) {
+      case SD_BEG: fstrm_iBufPos = slOffset; break;
+      case SD_CUR: fstrm_iBufPos += slOffset; break;
+      case SD_END: fstrm_iBufPos = fstrm_slBufSize + slOffset; break;
+      }
+      ExpandBuffer(fstrm_iBufPos);
+      if (fstrm_iBufPos > fstrm_slBufSize)
+        fstrm_slBufSize = fstrm_iBufPos;
+      return;
+    }
+#endif
     fseek(fstrm_pFile, slOffset, sd);
   }
 }
@@ -1069,6 +1146,10 @@ SLONG CTFileStream::GetPos_t(void)
   if(fstrm_iZipHandle != -1) {
     return fstrm_iZipLocation;
   } else {
+#ifdef PLATFORM_PSVITA
+    if (fstrm_pubBuf)
+      return fstrm_iBufPos;
+#endif
     return ftell(fstrm_pFile);
   }
 }
@@ -1079,6 +1160,10 @@ SLONG CTFileStream::GetStreamSize(void)
   if(fstrm_iZipHandle != -1) {
     return UNZIPGetSize(fstrm_iZipHandle);
   } else {
+#ifdef PLATFORM_PSVITA
+    if (fstrm_pubBuf)
+      return fstrm_slBufSize;
+#endif
     long lCurrentPos = ftell(fstrm_pFile);
     fseek(fstrm_pFile, 0, SD_END);
     long lRet = ftell(fstrm_pFile);
@@ -1093,6 +1178,10 @@ BOOL CTFileStream::AtEOF(void)
   if(fstrm_iZipHandle != -1) {
     return fstrm_iZipLocation >= fstrm_slZipSize;
   } else {
+#ifdef PLATFORM_PSVITA
+    if (fstrm_pubBuf)
+      return fstrm_slBufSize == fstrm_iBufPos;
+#endif
     int eof = feof(fstrm_pFile);
     return eof != 0;
   }
@@ -1104,6 +1193,16 @@ BOOL CTFileStream::PointerInStream(void* pPointer)
   // we're not using virtual allocation buffers so it's fine to return FALSE here.
   return FALSE;
 }
+
+#ifdef PLATFORM_PSVITA
+void CTFileStream::ExpandBuffer(const SLONG slToPos)
+{
+  if (slToPos > fstrm_slBufCap) {
+    fstrm_slBufCap = Max(fstrm_slBufCap + fstrm_slBufStep, slToPos);
+    GrowMemory((void **)&fstrm_pubBuf, fstrm_slBufCap);
+  }
+}
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // Memory stream construction/destruction

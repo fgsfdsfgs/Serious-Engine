@@ -1106,7 +1106,12 @@ void CNetworkLibrary::Save_t(const CTFileName &fnmGame) // throw char *
 
   // create the file
   CTFileStream strmFile;
+#ifdef PLATFORM_PSVITA
+  // write saves entirely in memory, then flush them to FS, because I/O is slow
+  strmFile.Create_t(fnmGame, CTStream::CreateMode::CM_BINARY_BUFFERED);
+#else
   strmFile.Create_t(fnmGame);
+#endif
 
   // write game to stream
   strmFile.WriteID_t("GAME");

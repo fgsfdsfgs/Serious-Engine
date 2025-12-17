@@ -102,6 +102,9 @@ public:
   enum CreateMode { // OBSOLETE!
     CM_TEXT  = 1,
     CM_BINARY = 2,
+#ifdef PLATFORM_PSVITA
+    CM_BINARY_BUFFERED = 3,
+#endif
   };
   // direction for seeking
   enum SeekDir {
@@ -233,6 +236,15 @@ private:
   SLONG fstrm_slZipSize; // size of the zip-file entry
 
   BOOL fstrm_bReadOnly;  // set if file is opened in read-only mode
+
+#ifdef PLATFORM_PSVITA
+  static constexpr SLONG fstrm_slBufStep = 1 * 1024 * 1024;
+  SLONG fstrm_slBufSize;
+  SLONG fstrm_slBufCap;
+  INDEX fstrm_iBufPos;
+  UBYTE *fstrm_pubBuf;
+  void ExpandBuffer(const SLONG slToPos);
+#endif
 public:
   /* Default constructor. */
   CTFileStream(void);
