@@ -469,9 +469,19 @@ static void JoyMenuEvent(MSG& msg)
         msg.wParam = wTranslated;
       }
     }
-  } else if (msg.message == WM_JOYAXISMOTION && bComputerOn) {
-    const FLOAT flVal = msg.lParam / 2048.f;
-    _flMouseDelta[msg.wParam & 1] = (Abs(flVal) > 4.f) ? flVal : 0.f;
+  } else if (bComputerOn) {
+    if (msg.message == WM_JOYAXISMOTION) {
+      const FLOAT flVal = msg.lParam / 2048.f;
+      _flMouseDelta[msg.wParam & 1] = (Abs(flVal) > 4.f) ? flVal : 0.f;
+    } else if (msg.message == WM_LBUTTONDOWN) {
+      // touched the screen; set our virtual mouse coords to match the touch point
+      POINT pt;
+      ::GetCursorPos(&pt);
+      _flMouseDelta[0] = 0.f;
+      _flMouseDelta[1] = 0.f;
+      _flMousePos[0] = pt.x;
+      _flMousePos[1] = pt.y;
+    }
   }
 
   if (!bComputerOn)
